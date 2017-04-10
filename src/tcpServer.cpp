@@ -121,7 +121,7 @@ int sendToUI(char* typeMessage, const void * data)
 {
     if((string)typeMessage == IMG)
     {
-        Jpg * imgC = (Jpg*)data;
+       Jpg * imgC = (Jpg*)data;
         serverSend("IMG",3);
         serverSend(imgC->data(),imgC->size());
         serverSend("TRAME",5);
@@ -129,7 +129,7 @@ int sendToUI(char* typeMessage, const void * data)
     }
     else if ((string)typeMessage == "POS")
     {
-      char buffer[20];
+        char buffer[20];
         position * maPosition = (position*)data;
         sprintf(buffer,"POScenter: %3d;%3d | %.1fTRAME", maPosition->center.x,maPosition->center.y, maPosition->angle);
         serverSend(buffer, strlen(buffer));

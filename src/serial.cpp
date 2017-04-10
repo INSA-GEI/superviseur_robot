@@ -13,8 +13,8 @@ int robotOpenCom(const char * path)
         fcntl(fd, F_SETFL, 0);
         tcgetattr(fd, &options);
         options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-        cfsetospeed (&options, B9600);
-        cfsetispeed (&options, B9600);
+        cfsetospeed (&options, B115200);
+        cfsetispeed (&options, B115200);
         options.c_cc[VMIN]=0;
         options.c_cc[VTIME]=0;
         tcsetattr(fd, TCSANOW, &options);

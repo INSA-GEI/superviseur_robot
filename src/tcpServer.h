@@ -18,6 +18,7 @@
 #include <string>
 #include <string.h>
 #include <iostream>
+#include "imagerie.h"
 
 #define IMG "IMG"
 #define BAT "BAT"

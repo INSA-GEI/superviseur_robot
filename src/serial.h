@@ -33,7 +33,7 @@
 #define ROBOT_ERROR -1
 #define ROBOT_CHEKSUM -4
 
-#define serialPort "/dev/ttyUSB0"
+#define serialPort "/dev/ttyS0"
 
 int robotOpenCom(const char * path=serialPort);
 int readRobot(void);
