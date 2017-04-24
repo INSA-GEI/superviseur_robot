@@ -130,13 +130,19 @@ int detectPosition(Image *imgInput, position *posTriangle, Arene * monArene) // 
             b = approx[1];
             c = approx[2];
 
-            center.x = (a.x + b.x + c.x)/3;
-            center.y = (a.y + b.y + c.y)/3;
-            if(monArene !=NULL)
+
+            if(monArene !=NULL) // ajout de l'offset de l'arène
             {
-                center.x += monArene->x;
-                center.y += monArene->y;
+               a.x += monArene->x;
+               a.y += monArene->y;
+	       b.x += monArene->x;
+               b.y += monArene->y;
+               c.x += monArene->x;
+               c.y += monArene->y;		    
             }
+		
+	    center.x = (a.x + b.x + c.x)/3;
+            center.y = (a.y + b.y + c.y)/3;
 
             posTriangle[nbrTriangle].center=center;
 
@@ -156,12 +162,6 @@ int detectPosition(Image *imgInput, position *posTriangle, Arene * monArene) // 
             {
                 posTriangle[nbrTriangle].direction=c;
                 //line(img,center,c,Scalar(0,125,0),2,8,0);
-            }
-
-            if(monArene != NULL)
-            {
-                posTriangle[nbrTriangle].direction.x+=monArene->x;
-                posTriangle[nbrTriangle].direction.y+=monArene->y;
             }
             posTriangle[nbrTriangle].angle=calculAngle(&posTriangle[nbrTriangle]);
 
