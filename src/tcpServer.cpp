@@ -138,7 +138,7 @@ int sendToUI(char* typeMessage, const void * data)
     else if ((string)typeMessage == "MES")
     {
         char buffer[50];
-        sprintf(buffer, "MES%sTRAME",(const char*)data);
+        sprintf(buffer, "MSG%sTRAME",(const char*)data);
         serverSend(buffer,strlen(buffer));
         return 0;
     }
