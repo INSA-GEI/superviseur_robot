@@ -23,7 +23,7 @@
 #define IMG "IMG"
 #define BAT "BAT"
 #define POS "POS"
-#define MES "MES" // Message directe pour Console Dumber
+#define MES "MSG" // Message directe pour Console Dumber
 #define ACK "ACK" // Message d'information concernant la derniére commande
 #define DMB "DMB"
 
