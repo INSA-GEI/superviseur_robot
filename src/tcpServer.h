@@ -52,15 +52,15 @@ int serverClose(void); // public
 /*
  * def : sendToUI envoie un message à l'interface graphique.
  * Les messages sont soit une image (IMG), un message console (MES),
- * une position (POS), ou une batterie (BAT).
- * la data doit correspondre à l'élement correspondant (Attention, pas de controle).
+ * une position (POS), un acquitement de connexion(ACK), ou une batterie (BAT)
+ * la data doit correspondre au correspondant (Attention, pas de controle).
  */
 int sendToUI(char* typeMessage, const void * data=NULL);
 
 
 /*
  * def : receptionFromUI est une fonction bloquante. Elle reçoit un message,
- * et retourne par référence le type du message (DMB,ARN,POS), ainsi que la data correspondante.
+ * et retourne par référence le type du message (DMB,MES,POS), ainsi que la data correspondante.
  * retourne la longueur de la chaine reçu.
  */
 int mesFromUI(char *typeMessage, char *data);
