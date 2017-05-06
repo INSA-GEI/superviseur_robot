@@ -56,7 +56,7 @@ int main() {
 	perror("erreur lors de la creation du thread\n");
 
     do
-    {   mesFromUI(header,data);
+    {   receptionFromUI(header,data);
         if(strcmp(header, DMB) == 0)
         {
             printf("EVENEMENT DUMBER DETECTE AVEC LE MESSAGE :%s \n",data);

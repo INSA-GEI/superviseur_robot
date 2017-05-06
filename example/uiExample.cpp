@@ -12,7 +12,7 @@ int main() {
     memset(header,'\0',4);
     do
     {  
-        mesFromUI(header,data);
+        receptionFromUI(header,data);
         if(strcmp(header, DMB) == 0)
         {
             printf("EVENEMENT DUMBER DETECTE AVEC LE MESSAGE :%s \n",data);
