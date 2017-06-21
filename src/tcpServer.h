@@ -81,7 +81,10 @@ int sendToUI(char* typeMessage, const void * data=NULL);
 /**
  * @brief receptionFromUI est une fonction bloquante. Elle reçoit un message,
  * et retourne par référence le type du message (DMB,ARN,POS), ainsi que la data correspondante.
- * @note Si le message est une demande de détection d'arène le type sera MSG et le contenu :
+ * @note Pour l'aréne les informations sont de types messages et le contenu sera.
+ * bArena => demande de selection d'arene
+ * okArena => Validation d'arene 
+ * noArena => non detection d'arene
  *
  * @retval retourne la longueur de la chaine reçu.
  */
