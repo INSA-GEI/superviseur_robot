@@ -1,7 +1,13 @@
-<<<<<<< HEAD
-//
-// Created by lucien on 05/04/17.
-//
+/**
+ * \file      serial.h
+ * \author    L.Senaneuch
+ * \version   1.0
+ * \date      06/06/2017
+ * \brief     Fonction permettant la communication avec le robot.
+ *
+ * \details   Ce fichier regroupe des fonctions facilitant la communication avec le robot en utilisant le port serie USART
+ */
+
 
 #ifndef DUMBERC_SERIAL_H_H
 #define DUMBERC_SERIAL_H_H
@@ -13,138 +19,66 @@
 #include <string.h>
 #include <stdlib.h>
 
-/// @brief Commande de test de connexion avec le robot.
+
 #define PING 		'p'
-///@brief Demande au robot de repasser à l'état IDLE
 #define BACKIDLE 	'r'
-///@brief Demande au robot de passer en mode run avec le Watch Dog d'activé.
 #define WITH_WD  	'W'
-///@brief Demande une remise à zero du watchdog.
 #define RELOAD 		'w'
-///@brief Demande l'information batterie
 #define GETVBAT 	'v'
-///@brief Demande l'information si le robot est occupé (en mouvement) ou non.
 #define GETBUSY 	'b'
-///@brief Demande au robot de passer en mode run avec le Watch Dog désactivé.
 #define WITHOUT_WD 	'u'
-///@brief Demande d'un mouvement droit.
 #define SETMOVE 	'M'
-///@brief Demande d'un mouvement turn.
 #define SETTURN 	'T'
-///@brief Demande au robot d'avancer
 #define GOFORWARD 	'F'
-///@brief Demande au robot de reculer
 #define GOBACK 		'B'
-///@brief Demande au robot de tourner à gauche
 #define TURNLEFT 	'L'
-///@brief Demande au robot de tourner à droite
 #define TURNRIGHT 	'R'
-///@brief Stop le robot
 #define STOPMOVE 	'S'
 
-
-/* Constantes Retour commande*/
 #define ROBOT_TIMED_OUT -3
 #define ROBOT_UKNOW_CMD -2
 #define ROBOT_ERROR 	-1
 #define ROBOT_CHEKSUM 	-4
 #define ROBOT_OK		0
 
-/// @brief Le port série utilisé par défaut sera ttyS0 sur le GPIO de la raspberry.
-#define serialPort "/dev/ttyS0"
-
-/**
- * @brief robotOpenCom ouvre un port série dont le chemin a été passé en paramétre.
- * @note  la variable global serilaPort est passé en paramétre par défaut.
- * @retval 0 si succés ou -1 si echec
- * @code{C}
- *      robotOpenCom(); // Utilisation de la valeur par défaut.
- * @endcode
- * @code{C}
- *      robotOpenCom("/dev/ttyUSB0);
- * @endcode
- *
- */
-int robotOpenCom(const char * path=serialPort);
-
-/**
- * @brief robotClose com ferme le file descriptor qui gére le port Série.
- * @retval retourne -1 si erreur. Rerourne 0 si succés.
- * @code{C}
- *      robotOpenCom();
- * @endcode
- */
-int robotCloseCom(void);
-
-/**
- * @brief Délivre une commande robot parmis celle definis en variable global.
- * @retval valeurs retournée sont des constantes de retour commandes (cf define).
- * @note Les calculs de checkSUm se font
- * @code{C}
- *      robotCmd(SETMOVE,"+100");
- *      robotCmd(PING);
- * @endcode
- */
-int robotCmd(char cmd, char * arg=NULL);
-
-#endif //DUMBERC_SERIAL_H_H
-=======
-//
-// Created by lucien on 05/04/17.
-//
-
-#ifndef DUMBERC_SERIAL_H_H
-#define DUMBERC_SERIAL_H_H
-
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
-#include <string.h>
-#include <stdlib.h>
-
-
-#define PING 'p'
-#define BACKIDLE 'r'
-#define WITH_WD  'W'
-#define RELOAD 'w'
-#define GETVBAT 'v'
-#define GETBUSY 'b'
-#define WITHOUT_WD 'u'
-#define SETMOVE 'M'
-#define SETTURN 'T'
-#define GOFORWARD 'F'
-#define GOBACK 'B'
-#define TURNLEFT 'L'
-#define TURNRIGHT 'R'
-#define STOPMOVE 'S'
-
-#define ROBOT_TIMED_OUT -3
-#define ROBOT_UKNOW_CMD -2
-#define ROBOT_ERROR -1
-#define ROBOT_CHEKSUM -4
-
 #define serialPort "/dev/ttyS0"
 
 
-/*
-  def : Tente d'ouvrir un port série sur le path indiqué.
-  Return 0 si tout le port a été ouvert. Return -1 sinon.
+
+ /**
+ * \brief     Ouvre la communication avec le robot.
+ * \details   Ouvre le serial port passé en paramétre. Par defaut cette fonction ouvre le port ttySO connecté au module xbee.
+ *             
+ * \param    *path      	 chaine de caractère indiquant le path du port serie à ouvrir.
+ * \return    Return -1 si l'ouverture c'est mal passé et 0 si le port est ouvert.
  */
 int robotOpenCom(const char * path=serialPort);
 
-/*def : Ferme le port série ouvert*/
+
+
+ /**
+ * \brief      Ferme la communication avec le robot.
+ * \details    Ferme le file descriptor du port serie contrôlant le robot
+ *             
+ * \param     void	aucun 
+ * \return    Retourne -1 en cas d'erreur ou 0 en cas de fermeture effectué
+ */
 int robotCloseCom(void);
 
-/*def : Envoi une association commande + argument au robot.
-Celui-ci retourne 0 si la commande est OK. retourne -3 en cas de timeout. -4 en cas d'erreur de checksum
--1 et -2 en cas d'erreur de commande et d'argument.
-Si la commande est un état de batterie la fonction retourne 0 1 ou 2 en fonction de son etat.*/
+
+
+ /**
+ * \brief      Envoi une commande au robot et attends sa réponse.
+ * \details    Envoi une commande au robot en ajoutant le checksum et lis la réponse du robot en verifiant le checksum.
+			   Le premier paramétre \a cmd correspond au type de commande ex : PING, SETMOVE ...
+			   Le second paramétre  \a *arg correspond aux arguments à la commande ex : SETMOVE, "100"
+			   La fonction retourne un code confirmation transmise par le robot (ROBOT_CHEKSUM, ROBOT_ERROR, ROBOT_TIMED_OUT, ROBOT_OK, ROBOT_UKNOW_CMD)
+ *             
+ * \param    cmd       Pointeur sur l'image sur laquelle chercher la position du des robots.
+ * \param    *arg    Pointeur sur un tableau de position ou seront stocké les positions des triangles détectés. 
+ * \return   retourne un code confirmation.
+ */
 int robotCmd(char cmd, char * arg=NULL);
 
-/*Envoi une commande sans se soucier de la réponse.
-Calcul le checksum*/
-int sendCmd(char cmd, char * arg=NULL);
 
 #endif //DUMBERC_SERIAL_H_H
->>>>>>> 1b712e36af09fa845aef9bc3aac82cc9876312ec

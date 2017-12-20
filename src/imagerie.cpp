@@ -1,12 +1,25 @@
+/**
+ * \file      imagerie.cpp
+ * \author    L.Senaneuch
+ * \version   1.0
+ * \date      06/06/2017
+ * \brief     Fonctions de traitement d'image utilisable pour la détection du robot.
+ *
+ * \details   Ce fichier utilise la libraire openCV2 pour faciliter le traitement d'image dans le projet Destijl.
+ *            Il permet de faciliter la détection de l'arène et la détection du robot.
+ *			  /!\ Attention Bien que celui-ci soit un .cpp la structure du code n'est pas sous forme d'objet.
+ */
+
 #include "imagerie.h"
 
 using namespace cv;
 using namespace raspicam;
 using namespace std;
 
-float calculAngle(position * positionRobot); // fonction privée
-int cropArena(Image *imgInput, Image *imgOutput, Arene *AreneInput); // fonction privée
-float euclideanDist(Point& p, Point& q); // fonction privée
+
+float calculAngle(position * positionRobot);
+int cropArena(Image *imgInput, Image *imgOutput, Arene *AreneInput);
+float euclideanDist(Point& p, Point& q);
 
 void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene)
 {
@@ -14,6 +27,7 @@ void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene)
         *imgOutput=imgInput->clone();
     rectangle(*imgOutput,monArene->tl(),monArene->br(),Scalar(0,0,125),2,8,0);
 }
+
 
 int openCamera(RaspiCam_Cv  *Camera)
 {
