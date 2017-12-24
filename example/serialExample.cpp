@@ -9,12 +9,10 @@
 
 int main() {
    robotOpenCom();
-   printf("Resultat commande : %d \n",robotCmd(WITHOUT_WD));
-   printf("Resultat commande : %d \n",robotCmd(SETMOVE,"+500"));
-   printf("Resultat commande : %d \n",robotCmd(SETTURN,"-180"));
+   printf("Resultat commande : %d \n",sendCmdToRobot(WITHOUT_WD));
+   printf("Resultat commande : %d \n",sendCmdToRobot(SETMOVE,"+500"));
+   printf("Resultat commande : %d \n",sendCmdToRobot(SETTURN,"-180"));
    robotCloseCom();
-
-
 
    return 0;
 }

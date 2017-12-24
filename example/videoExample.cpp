@@ -2,10 +2,13 @@
 #include "../src/serial.h"
 #include "../src/tcpServer.h" // include himself imagerie.h
 #include <pthread.h>
+#include <unistd.h>
 
 using namespace std;
 using namespace cv;
+#ifndef __STUB__
 using namespace raspicam;
+#endif
 
 void * threadVideo(void *arg)
 {
@@ -13,14 +16,18 @@ void * threadVideo(void *arg)
 	Camera rpiCam;
 	Image imgVideo;
 	Arene monArene;
-	position positionRobots[20];
+	Position positionRobots[20];
 	Jpg compress;
 
 	openCamera(&rpiCam);
 	do
 	{
+#ifndef __STUB__
 	   getImg(&rpiCam, &imgVideo);
-	   if(detectArena(&imgVideo, &monArene)==0)
+#else
+           getImg(&rpiCam, &imgVideo, "/home/pehladik/C-TP-RT/src/mondrian22.jpeg");
+#endif
+	   /*if(detectArena(&imgVideo, &monArene)==0)
 	   {
 	      detectPosition(&imgVideo,positionRobots,&monArene);
 	      drawArena(&imgVideo,&imgVideo,&monArene);
@@ -28,7 +35,7 @@ void * threadVideo(void *arg)
 	   else
 	      detectPosition(&imgVideo,positionRobots);
 
-	   drawPosition(&imgVideo,&imgVideo,&positionRobots[0]);
+	   drawPosition(&imgVideo,&imgVideo,&positionRobots[0]);*/
 	   imgCompress(&imgVideo,&compress);
 
 	   sendToUI("IMG",&compress);
@@ -38,9 +45,21 @@ void * threadVideo(void *arg)
 	pthread_exit(NULL);
 }
 
-
+void * threadClient(void *arg){
+    char * args [] = {"nodejs", "/home/pehladik/Interface-TP-RT/interface.js", NULL};
+    if (execv("/usr/bin/nodejs", args)== -1){
+        perror("execv");
+        return EXIT_FAILURE;
+    }
+    
+}
 
 int main() {
+    pthread_t threadClient;
+    if(pthread_create(&threadClient,NULL, threadClient, NULL) == -1)
+	perror("erreur lors de la creation du thread\n");
+    
+
     serverOpen();
     robotOpenCom();
 
@@ -55,16 +74,18 @@ int main() {
 
     do
     {   receptionFromUI(header,data);
+        printf("Msg reçu : %s %s", header, data);
+        
         if(strcmp(header, DMB) == 0)
         {
             printf("EVENEMENT DUMBER DETECTE AVEC LE MESSAGE :%s \n",data);
-            int a = robotCmd(data[0]);
+            int a = sendCmdToRobot(data[0]);
             printf("Resultat CMD : %d \n", a);
-            if(data[0] == 'u' && a == 0)
+            if(data[0] == WITHOUT_WD && a == 0)
             {
                 sendToUI(ACK);
             }
-            if(data[0] == 'r' && a == 0)
+            else if(data[0] == BACKIDLE && a == 0)
             {
                 sendToUI(ACK);
             }

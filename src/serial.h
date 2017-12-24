@@ -43,29 +43,23 @@
 
 #define serialPort "/dev/ttyS0"
 
-
-
  /**
  * \brief     Ouvre la communication avec le robot.
  * \details   Ouvre le serial port passé en paramétre. Par defaut cette fonction ouvre le port ttySO connecté au module xbee.
  *             
- * \param    *path      	 chaine de caractère indiquant le path du port serie à ouvrir.
+ * \param    *path    chaine de caractère indiquant le path du port serie à ouvrir.
  * \return    Return -1 si l'ouverture c'est mal passé et 0 si le port est ouvert.
  */
 int robotOpenCom(const char * path=serialPort);
 
-
-
  /**
  * \brief      Ferme la communication avec le robot.
- * \details    Ferme le file descriptor du port serie contrôlant le robot
+ * \details    Ferme le descripteur de fichier du port serie contrôlant le robot.
  *             
  * \param     void	aucun 
  * \return    Retourne -1 en cas d'erreur ou 0 en cas de fermeture effectué
  */
 int robotCloseCom(void);
-
-
 
  /**
  * \brief      Envoi une commande au robot et attends sa réponse.
@@ -78,7 +72,7 @@ int robotCloseCom(void);
  * \param    *arg    Pointeur sur un tableau de position ou seront stocké les positions des triangles détectés. 
  * \return   retourne un code confirmation.
  */
-int robotCmd(char cmd, char * arg=NULL);
+int sendCmdToRobot(char cmd, const char * arg=NULL);
 
 
 #endif //DUMBERC_SERIAL_H_H

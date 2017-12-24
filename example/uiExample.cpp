@@ -1,22 +1,30 @@
 #include "../src/serial.h"
 #include "../src/tcpServer.h"
 #include "../src/imagerie.h"
+#include <unistd.h>
+#include <pthread.h>
 
 int main() {
+    runNodejs("/usr/bin/nodejs", "/home/pehladik/Interface-TP-RT/interface.js");
+    
+    printf("Lancement serveur ... \n");
     serverOpen();
+    printf("Serveur lancé ... \n");
     robotOpenCom();
 
     char header[4];
     char data[20];
     memset(data, '\0',20);
     memset(header,'\0',4);
+    int res;
     do
     {  
-        receptionFromUI(header,data);
+        res = receptionFromUI(header,data);
+        printf ("res : %d\n", res);
         if(strcmp(header, DMB) == 0)
         {
             printf("EVENEMENT DUMBER DETECTE AVEC LE MESSAGE :%s \n",data);
-            int a = robotCmd(data[0]);
+            int a = sendCmdToRobot(data[0]);
             printf("Resultat CMD : %d \n", a);
             if(data[0] == 'u' && a == 0)
             {
@@ -38,8 +46,10 @@ int main() {
             printf("EVENEMENT POSITION DETECTE AVEC LE MESSAGE :%s \n",data);
         }
     }while((strcmp(header,MES)!=0) || (data[0] != 'C'));
+    killNodejs();
+    
     robotCloseCom();
     serverClose();
-
+    pause();
     return 0;
 }

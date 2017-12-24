@@ -11,13 +11,17 @@
  */
 
 #include "imagerie.h"
+#include <iostream>
 
 using namespace cv;
+#ifndef __STUB__
 using namespace raspicam;
+#else
+Image stubImg;
+#endif
 using namespace std;
 
-
-float calculAngle(position * positionRobot);
+float calculAngle(Position * positionRobot);
 int cropArena(Image *imgInput, Image *imgOutput, Arene *AreneInput);
 float euclideanDist(Point& p, Point& q);
 
@@ -28,16 +32,17 @@ void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene)
     rectangle(*imgOutput,monArene->tl(),monArene->br(),Scalar(0,0,125),2,8,0);
 }
 
-
-int openCamera(RaspiCam_Cv  *Camera)
+int openCamera(Camera  *camera)
 {
-    Camera->set(CV_CAP_PROP_FORMAT, CV_8UC3);
-    Camera->set(CV_CAP_PROP_FRAME_WIDTH,WIDTH);
-    Camera->set(CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
+#ifndef __STUB__
+    camera->set(CV_CAP_PROP_FORMAT, CV_8UC3);
+    camera->set(CV_CAP_PROP_FRAME_WIDTH,WIDTH);
+    camera->set(CV_CAP_PROP_FRAME_HEIGHT,HEIGHT);
 
     printf("Opening Camera...\n");
-    if (!(Camera->open())) {
-        perror("Can't open Camera\n") ;return -1;
+    if (!(camera->open())) {
+        perror("Can't open Camera\n") ;
+        return -1;
     }
     else
     {
@@ -45,19 +50,27 @@ int openCamera(RaspiCam_Cv  *Camera)
         sleep(2);
         printf("Start capture\n");
         return 0;
-    }
+    }   
+#endif
 }
 
-void getImg(RaspiCam_Cv *Camera, Image * monImage) // getImg(Camera, Image img);
+void getImg(Camera *camera, Image * monImage, const char  * fichier) // getImg(Camera, Image img);
 {
-    Camera->grab();
-    Camera->retrieve(*monImage);
+#ifndef __STUB__
+    camera->grab();
+    camera->retrieve(*monImage);
     cvtColor(*monImage,*monImage,CV_BGR2RGB);
+#else
+    stubImg = imread(fichier, CV_LOAD_IMAGE_COLOR);
+    stubImg.copyTo(*monImage);
+#endif
 }
 
-void closeCam(Camera *Camera) // closeCam(Camera) : camera Entrer
+void closeCam(Camera *camera) // closeCam(Camera) : camera Entrer
 {
-    Camera->release();
+#ifndef __STUB__
+    camera->release();
+#endif
 }
 
 
@@ -85,12 +98,12 @@ int detectArena(Image *monImage, Arene *rectangle) // Image en entrée // rectan
     return -1;
 }
 
-int cropArena(Image *imgInput, Image *imgOutput, Arene *AreneInput) // image // rectangle // image2
+int cropArena(Image *imgInput, Image *imgOutput, Arene *areneInput) // image // rectangle // image2
 {
     Image img;
     img=imgInput->clone();
 
-    *imgOutput = img(*AreneInput);
+    *imgOutput = img(*areneInput);
     return 0;
 }
 
@@ -105,7 +118,7 @@ void imgCompress(Image *imgInput, Jpg *imageCompress) // image entrée // imageE
 }
 
 
-int detectPosition(Image *imgInput, position *posTriangle, Arene * monArene) // entree : image  / sortie tab pos
+int detectPosition(Image *imgInput, Position *posTriangle, Arene * monArene) // entree : image  / sortie tab pos
 {
     vector<vector<Point> > contours;
     vector<Point> approx;
@@ -179,9 +192,7 @@ int detectPosition(Image *imgInput, position *posTriangle, Arene * monArene) // 
     return nbrTriangle;
 }
 
-
-
-void drawPosition(Image *imgInput, Image *imgOutput, position *positionRobot) // img E/S   pos : E
+void drawPosition(Image *imgInput, Image *imgOutput, Position *positionRobot) // img E/S   pos : E
 {
     if(imgInput!=imgOutput)
     {
@@ -190,7 +201,7 @@ void drawPosition(Image *imgInput, Image *imgOutput, position *positionRobot) //
     line(*imgOutput,positionRobot->center,positionRobot->direction,Scalar(0,125,0),2,8,0);
 }
 
-float calculAngle(position * positionRobot) // position en entree
+float calculAngle(Position * positionRobot) // position en entree
 {
     float a = positionRobot->direction.x - positionRobot->center.x;
     float b = positionRobot->direction.y - positionRobot->center.y ;
