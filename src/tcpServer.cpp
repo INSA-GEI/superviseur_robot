@@ -24,9 +24,9 @@ int runNodejs(const char * path, char * file) {
     //char *const parmList[] = {"/bin/ls", "-l", "/home", NULL};
     char * const parmList[] = {"nodejs", file, NULL};
 
-    if ((pidNodejs = fork()) == -1)
+    if ((ret = fork()) == -1)
         perror("fork error");
-    else if (pidNodejs == 0) {
+    else if (ret == 0) {
         ret = execv(path, parmList);
     }
     return ret;

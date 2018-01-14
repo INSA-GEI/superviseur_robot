@@ -36,10 +36,17 @@
 #define STOPMOVE 	'S'
 
 #define ROBOT_TIMED_OUT -3
-#define ROBOT_UKNOW_CMD -2
+#define ROBOT_UKNOWN_CMD -2
 #define ROBOT_ERROR 	-1
-#define ROBOT_CHEKSUM 	-4
-#define ROBOT_OK		0
+#define ROBOT_CHECKSUM 	-4
+#define ROBOT_OK    0
+
+#define BAT_LOW 0
+#define BAT_MED 1
+#define BAT_HIG 2
+
+#define ROBOT_BUSY 1
+#define ROBOT_AVAILABLE 0
 
 #define serialPort "/dev/ttyS0"
 
@@ -68,8 +75,8 @@ int robotCloseCom(void);
 			   Le second paramétre  \a *arg correspond aux arguments à la commande ex : SETMOVE, "100"
 			   La fonction retourne un code confirmation transmise par le robot (ROBOT_CHEKSUM, ROBOT_ERROR, ROBOT_TIMED_OUT, ROBOT_OK, ROBOT_UKNOW_CMD)
  *             
- * \param    cmd       Pointeur sur l'image sur laquelle chercher la position du des robots.
- * \param    *arg    Pointeur sur un tableau de position ou seront stocké les positions des triangles détectés. 
+ * \param    cmd    Entête de la commande
+ * \param    *arg   Argument de la commande 
  * \return   retourne un code confirmation.
  */
 int sendCmdToRobot(char cmd, const char * arg=NULL);

@@ -152,7 +152,7 @@ int receiveMsg(void)
         msg[taille-2] = 0;
         if(checksum!=checkSumGO(msg))
         {
-            return ROBOT_CHEKSUM;
+            return ROBOT_CHECKSUM;
         }
         else
         {
@@ -160,7 +160,7 @@ int receiveMsg(void)
             {
                 case 'O' : return 0;
                 case 'E' : return ROBOT_ERROR;
-                case 'C' : return ROBOT_UKNOW_CMD;
+                case 'C' : return ROBOT_UKNOWN_CMD;
                 default :  return atoi(&msg[0]);
             }
         }

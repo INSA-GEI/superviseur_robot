@@ -1,14 +1,17 @@
 #include "../src/serial.h"
 #include "../src/tcpServer.h"
 #include "../src/imagerie.h"
+#include "../src/trace.h"
 #include <unistd.h>
 #include <pthread.h>
 
 int main() {
+    //startTrace();
     runNodejs("/usr/bin/nodejs", "/home/pehladik/Interface-TP-RT/interface.js");
     
     printf("Lancement serveur ... \n");
     serverOpen();
+    //stopTrace();
     printf("Serveur lancé ... \n");
     robotOpenCom();
 
