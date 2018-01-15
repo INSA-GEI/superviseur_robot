@@ -1,6 +1,5 @@
 #include "monitor.h"
 
-
 using namespace std;
 
 SOCKADDR_IN ssin;

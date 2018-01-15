@@ -128,11 +128,6 @@ void initStruct(void) {
         printf("Error msg queue create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-
-    /* Creation des structures globales du projet */
-    //robot = d_new_robot();
-    //move = d_new_movement();
-    //serveur = d_new_server();
 }
 
 void startTasks() {
