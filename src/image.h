@@ -51,14 +51,14 @@ struct Position {
  * \param    *Camera      	Pointeur d'un file descriptor d'une camera ouverte
  * \return retourne 0 si la camera a été ouverte correctement et -1 si une erreur survient.
  */
-int openCamera(Camera *camera);
+int open_camera(Camera *camera);
 
 /**
  * \brief      Ferme la camera passé en paramètre
  *             
  * \param    *Camera       Pointeur sur la camera à fermer
  */
-void closeCam(Camera *camera);
+void close_camera(Camera *camera);
 
 /**
  * \brief      Capture une image avec la camera passée en entrée. En cas de test
@@ -70,7 +70,7 @@ void closeCam(Camera *camera);
  * \param    *fichier         chemin du fichier d'image
  * \return    Retourne -1 si une erreur survient.
  */
-void getImg(Camera *camera, Image * monImage, const char *fichier = NULL);
+void get_image(Camera *camera, Image * monImage, const char *fichier = NULL);
 
 /**
  * \brief      Détecte une arène dans une image fournis en paramètre.
@@ -79,7 +79,7 @@ void getImg(Camera *camera, Image * monImage, const char *fichier = NULL);
  * \param    *rectangle 	 Pointeur sur les coordonnées du rectangles trouvé. 
  * \return    Retourne -1 si aucune arène n'est détectée. Sinon retourne 0
  */
-int detectArena(Image *monImage, Arene *rectangle);
+int detect_arena(Image *monImage, Arene *rectangle);
 
 /**
  * \brief      Dessine le plus petit rectangle contenant l'arène
@@ -88,7 +88,7 @@ int detectArena(Image *monImage, Arene *rectangle);
  * \param    *imgOutput      Pointeur sur l'image de sortie (image d'entrée + arène marquée)
  * \param    *monArene		 Pointeur de type Arène contenant les information à dessiner
  */
-void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene);
+void draw_arena(Image *imgInput, Image *imgOutput, Arene *monArene);
 
 /**
  * \brief      Détecte la position d'un robot.
@@ -99,17 +99,19 @@ void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene);
  * \param    *monArene       Pointeur de type Arène si nécessaire d'affiner la recherche (optionnel) 
  * \return    Le nombre de triangles détectés.
  */
-int detectPosition(Image *imgInput, Position *posTriangle, Arene * monArene = NULL);
+int detect_position(Image *imgInput, Position *posTriangle, Arene * monArene = NULL);
 
 /**
- * \brief      Dessine sur une image en entr�e la position d'un robot et sa direction.
- * \details    Sauvegarde l'image des coordonn�es pass� par positionRobot superpos� � l'image d'entr�e sur imgOutput.
+ * \brief      Dessine sur une image en entrée la position d'un robot et sa direction.
+ * \details    Sauvegarde l'image des coordonnées passées par positionRobot 
+ * superposée à l'image d'entrée sur imgOutput.
  *             
- * \param      *imgInput	      	Pointeur sur l'image d'entr�e
- * \param      *imgOutput    		Pointeur sur l'image de sortie ( image d'entr�e + dessin de la position)
+ * \param      *imgInput	      	Pointeur sur l'image d'entrée
+ * \param      *imgOutput    		Pointeur sur l'image de sortie ( image 
+ * d'entrée + dessin de la position)
  * \param      *positionRobot   	Pointeur sur la structure position d'un robot.
  */
-void drawPosition(Image *imgInput, Image *imgOutput, Position *positionRobot);
+void draw_position(Image *imgInput, Image *imgOutput, Position *positionRobot);
 
 /**
  * \brief      Détecte la position d'un robot.
@@ -118,6 +120,6 @@ void drawPosition(Image *imgInput, Image *imgOutput, Position *positionRobot);
  * \param    *imgInput      	Pointeur sur l'image à sauvegarder en mémoire sous format jpg.
  * \param    *imageCompress	Pointeur sur une image .jpg.
  */
-void imgCompress(Image *imgInput, Jpg *imageCompress);
+void compress_image(Image *imgInput, Jpg *imageCompress);
 
 #endif // IMAGERIE_H

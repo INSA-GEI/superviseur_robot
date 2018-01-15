@@ -18,37 +18,16 @@
 #include <termios.h>
 #include <string.h>
 #include <stdlib.h>
+#include "definitions.h"
 
-
-#define PING 		'p'
-#define BACKIDLE 	'r'
-#define WITH_WD  	'W'
-#define RELOAD 		'w'
-#define GETVBAT 	'v'
-#define GETBUSY 	'b'
-#define WITHOUT_WD 	'u'
-#define SETMOVE 	'M'
-#define SETTURN 	'T'
-#define GOFORWARD 	'F'
-#define GOBACK 		'B'
-#define TURNLEFT 	'L'
-#define TURNRIGHT 	'R'
-#define STOPMOVE 	'S'
-
-#define ROBOT_TIMED_OUT -3
-#define ROBOT_UKNOWN_CMD -2
-#define ROBOT_ERROR 	-1
-#define ROBOT_CHECKSUM 	-4
-#define ROBOT_OK    0
-
-#define BAT_LOW 0
-#define BAT_MED 1
-#define BAT_HIG 2
-
-#define ROBOT_BUSY 1
-#define ROBOT_AVAILABLE 0
 
 #define serialPort "/dev/ttyS0"
+
+typedef struct
+   {
+    char header[4];
+    char data[20];
+   } Message;
 
  /**
  * \brief     Ouvre la communication avec le robot.
@@ -57,7 +36,7 @@
  * \param    *path    chaine de caractère indiquant le path du port serie à ouvrir.
  * \return    Return -1 si l'ouverture c'est mal passé et 0 si le port est ouvert.
  */
-int robotOpenCom(const char * path=serialPort);
+int open_communication_robot(const char * path=serialPort);
 
  /**
  * \brief      Ferme la communication avec le robot.
@@ -66,7 +45,7 @@ int robotOpenCom(const char * path=serialPort);
  * \param     void	aucun 
  * \return    Retourne -1 en cas d'erreur ou 0 en cas de fermeture effectué
  */
-int robotCloseCom(void);
+int close_communication_robot(void);
 
  /**
  * \brief      Envoi une commande au robot et attends sa réponse.
@@ -79,7 +58,7 @@ int robotCloseCom(void);
  * \param    *arg   Argument de la commande 
  * \return   retourne un code confirmation.
  */
-int sendCmdToRobot(char cmd, const char * arg=NULL);
+int send_command_to_robot(char cmd, const char * arg=NULL);
 
 
 #endif //DUMBERC_SERIAL_H_H

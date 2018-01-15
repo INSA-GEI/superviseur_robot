@@ -10,7 +10,7 @@
  *			  /!\ Attention Bien que celui-ci soit un .cpp la structure du code n'est pas sous forme d'objet.
  */
 
-#include "imagerie.h"
+#include "image.h"
 #include <iostream>
 
 using namespace cv;
@@ -25,14 +25,14 @@ float calculAngle(Position * positionRobot);
 int cropArena(Image *imgInput, Image *imgOutput, Arene *AreneInput);
 float euclideanDist(Point& p, Point& q);
 
-void drawArena(Image *imgInput, Image *imgOutput, Arene *monArene)
+void draw_arena(Image *imgInput, Image *imgOutput, Arene *monArene)
 {
     if(imgInput!=imgOutput)
         *imgOutput=imgInput->clone();
     rectangle(*imgOutput,monArene->tl(),monArene->br(),Scalar(0,0,125),2,8,0);
 }
 
-int openCamera(Camera  *camera)
+int open_camera(Camera  *camera)
 {
 #ifndef __STUB__
     camera->set(CV_CAP_PROP_FORMAT, CV_8UC3);
@@ -54,7 +54,7 @@ int openCamera(Camera  *camera)
 #endif
 }
 
-void getImg(Camera *camera, Image * monImage, const char  * fichier) // getImg(Camera, Image img);
+void get_image(Camera *camera, Image * monImage, const char  * fichier) // getImg(Camera, Image img);
 {
 #ifndef __STUB__
     camera->grab();
@@ -66,7 +66,7 @@ void getImg(Camera *camera, Image * monImage, const char  * fichier) // getImg(C
 #endif
 }
 
-void closeCam(Camera *camera) // closeCam(Camera) : camera Entrer
+void close_camera(Camera *camera) // closeCam(Camera) : camera Entrer
 {
 #ifndef __STUB__
     camera->release();
@@ -74,7 +74,7 @@ void closeCam(Camera *camera) // closeCam(Camera) : camera Entrer
 }
 
 
-int detectArena(Image *monImage, Arene *rectangle) // Image en entrée // rectangle en sortie
+int detect_arena(Image *monImage, Arene *rectangle) // Image en entrée // rectangle en sortie
 {
     vector<vector<Point> > contours;
     vector<Point> approx;
@@ -112,13 +112,13 @@ float euclideanDist(Point& p, Point& q) {
     return cv::sqrt(diff.x*diff.x + diff.y*diff.y);
 }
 
-void imgCompress(Image *imgInput, Jpg *imageCompress) // image entrée // imageEncodé en sortie
+void compress_image(Image *imgInput, Jpg *imageCompress) // image entrée // imageEncodé en sortie
 {
     imencode(".jpg",*imgInput,*imageCompress);
 }
 
 
-int detectPosition(Image *imgInput, Position *posTriangle, Arene * monArene) // entree : image  / sortie tab pos
+int detect_position(Image *imgInput, Position *posTriangle, Arene * monArene) // entree : image  / sortie tab pos
 {
     vector<vector<Point> > contours;
     vector<Point> approx;
@@ -192,7 +192,7 @@ int detectPosition(Image *imgInput, Position *posTriangle, Arene * monArene) // 
     return nbrTriangle;
 }
 
-void drawPosition(Image *imgInput, Image *imgOutput, Position *positionRobot) // img E/S   pos : E
+void draw_position(Image *imgInput, Image *imgOutput, Position *positionRobot) // img E/S   pos : E
 {
     if(imgInput!=imgOutput)
     {

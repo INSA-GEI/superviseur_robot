@@ -1,9 +1,9 @@
 #include "../src/serial.h"
 #include "../src/tcpServer.h"
 #include "../src/imagerie.h"
-#include "../src/trace.h"
 #include <unistd.h>
 #include <pthread.h>
+
 
 int main() {
     //startTrace();

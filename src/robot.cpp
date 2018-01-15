@@ -1,4 +1,4 @@
-#include "serial.h"
+#include "robot.h"
 
 int fd;
 
@@ -8,7 +8,7 @@ char checkSumGO(char * msg);
 int receiveMsg(void);
 int sendCmd(char cmd, char * arg);
 
-int robotOpenCom(const char * path)
+int open_communication_robot(const char * path)
 {
 #ifndef __STUB__
     struct termios options;
@@ -36,7 +36,7 @@ int robotOpenCom(const char * path)
 }
 
 
-int robotCloseCom(void)
+int close_communication_robot(void)
 {
 #ifndef __STUB__
     return close(fd);
@@ -46,7 +46,7 @@ int robotCloseCom(void)
 }
 
 
-int sendCmdToRobot(char cmd, const char * arg)
+int send_command_to_robot(char cmd, const char * arg)
 {
 #ifndef __STUB__
     sendCmd(cmd,arg);
@@ -56,46 +56,46 @@ int sendCmdToRobot(char cmd, const char * arg)
     int reponse;
     switch(cmd)
     {
-        case PING:
+        case DMB_PING:
             reponse = 0;
             break;
-        case BACKIDLE:
+        case DMB_IDLE:
             reponse = 0;
             break;
-        case WITH_WD:
+        case DMB_START_WITH_WD:
             reponse = 0;
             break;
-        case RELOAD:
+        case DMB_RELOAD_WD:
             reponse = 0;
             break;
-        case GETVBAT:
+        case DMB_GET_VBAT:
             reponse = 2;
             break;
-        case GETBUSY:
+        case DMB_IS_BUSY:
             reponse = 1;
             break;
-        case WITHOUT_WD:
+        case DMB_START_WITHOUT_WD:
             reponse = 0;
             break;
-        case SETMOVE:
+        case DMB_MOVE:
             reponse = 0;
             break;
-        case SETTURN:
+        case DMB_TURN:
             reponse = 0;
             break;
-        case GOFORWARD:
+        case DMB_GO_FORWARD:
             reponse = 0;
             break;
-        case GOBACK:
+        case DMB_GO_BACK:
             reponse = 0;
             break;
-        case TURNLEFT:
+        case DMB_GO_LEFT:
             reponse = 0;
             break;
-        case TURNRIGHT:
+        case DMB_GO_RIGHT:
             reponse = 0;
             break;
-        case STOPMOVE:
+        case DMB_STOP_MOVE:
             reponse = 0;
             break;
         default:
@@ -116,20 +116,20 @@ int sendCmd(char cmd, char * arg)
     cmdWithArg[0]=cmd;
     switch(cmd)
     {
-        case GOFORWARD: strcpy(cmdWithArg,"M=+64000");
+        case DMB_GO_FORWARD: strcpy(cmdWithArg,"M=+64000");
             break;
-        case GOBACK:    strcpy(cmdWithArg,"M=-64000");
+        case DMB_GO_BACK:    strcpy(cmdWithArg,"M=-64000");
             break;
-        case TURNLEFT:  strcpy(cmdWithArg,"T=+64000");
+        case DMB_GO_LEFT:  strcpy(cmdWithArg,"T=+64000");
             break;
-        case TURNRIGHT: strcpy(cmdWithArg,"T=-64000");
+        case DMB_GO_RIGHT: strcpy(cmdWithArg,"T=-64000");
             break;
-        case STOPMOVE:  strcpy(cmdWithArg,"M=0");
+        case DMB_STOP_MOVE:  strcpy(cmdWithArg,"M=0");
             break;
-        case SETMOVE:   strcat(cmdWithArg,"=");
+        case DMB_MOVE:   strcat(cmdWithArg,"=");
             strcat(cmdWithArg,arg);
             break;
-        case SETTURN:   strcat(cmdWithArg,"=");
+        case DMB_TURN:   strcat(cmdWithArg,"=");
             strcat(cmdWithArg,arg);
             break;
     }

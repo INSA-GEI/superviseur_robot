@@ -1,4 +1,4 @@
-#include "tcpServer.h"
+#include "monitor.h"
 
 
 using namespace std;
@@ -19,7 +19,7 @@ string serverReceive(int size);
 int serverSend(const void *data, int dataLength);
 int lolReceive(char *data);
 
-int runNodejs(const char * path, char * file) {
+int run_nodejs(const char * path, char * file) {
     int ret;
     //char *const parmList[] = {"/bin/ls", "-l", "/home", NULL};
     char * const parmList[] = {"nodejs", file, NULL};
@@ -32,21 +32,23 @@ int runNodejs(const char * path, char * file) {
     return ret;
 }
 
-int killNodejs() {
+int kill_nodejs() {
 #ifdef __VERBOSE__  
     printf("kill nodejs\n");
 #endif
     return kill(pidNodejs, SIGTERM);
 }
 
-int serverOpen(int port) {
+int open_server(int port) {
     /* Création d'un socket */
     sock = socket(AF_INET, SOCK_STREAM, 0);
     int enable = 1;
 
     /* Si la socket est valide */
     if (sock != INVALID_SOCKET) {
-        printf("Socket %d est ouvert en mode TCP/IP\n", sock);
+#ifdef _WITH_TRACE_
+        printf("TCP/IP Socket %d opened\n", sock);
+#endif
         setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof (enable));
 
         /* Configuration */
@@ -63,9 +65,13 @@ int serverOpen(int port) {
             /* Si la socket fonctionne */
             if (sock_err != SOCKET_ERROR) {
                 /* Attente pendant laquelle le client se connecte */
-                printf("Attente d'un client sur le port %d ... \n", port);
+#ifdef _WITH_TRACE_
+                printf("Waiting a client on port %d\n", port);
+#endif
                 csock = accept(sock, (SOCKADDR*) & csin, &crecsize);
-                printf("Client connecté\n");
+#ifdef _WITH_TRACE_
+                printf("Client connected\n");
+#endif
                 return 0;
             } else {
                 perror("listen");
@@ -81,7 +87,7 @@ int serverOpen(int port) {
     return 0;
 }
 
-int serverClose(void) {
+int close_server(void) {
     /* Fermeture de la socket client et de la socket serveur */
     close(csock);
     close(sock);
@@ -89,30 +95,30 @@ int serverClose(void) {
     return 0;
 }
 
-int sendToUI(const char* typeMessage, const void * data) {
-    if ((string) typeMessage == IMG) {
+int send_message_to_monitor(const char* typeMessage, const void * data) {
+    if ((string) typeMessage == HEADER_STM_IMAGE) {
         Jpg * imgC = (Jpg*) data;
         serverSend("IMG", 3);
         serverSend(imgC->data(), imgC->size());
         serverSend("TRAME", 5);
         return 0;
-    } else if ((string) typeMessage == "POS") {
+    } else if ((string) typeMessage == HEADER_STM_POS) {
         char buffer[20];
         Position * maPosition = (Position*) data;
         sprintf(buffer, "POScenter: %3d;%3d | %.1fTRAME", maPosition->center.x, maPosition->center.y, maPosition->angle);
         serverSend(buffer, strlen(buffer));
         return 0;
-    } else if ((string) typeMessage == "MES") {
+    } else if ((string) typeMessage == HEADER_STM_MES) {
         char buffer[50];
         sprintf(buffer, "MSG%sTRAME", (const char*) data);
         serverSend(buffer, strlen(buffer));
         return 0;
-    } else if ((string) typeMessage == "ACK") {
+    } else if ((string) typeMessage == HEADER_STM_ACK) {
         char buffer[50];
         sprintf(buffer, "ACK%sTRAME", (const char*) data);
         serverSend(buffer, strlen(buffer));
         return 0;
-    } else if ((string) typeMessage == BAT) {
+    } else if ((string) typeMessage == HEADER_STM_BAT) {
         char buffer[50];
         sprintf(buffer, "BAT%sTRAME", (const char*) data);
         serverSend(buffer, strlen(buffer));
@@ -122,7 +128,7 @@ int sendToUI(const char* typeMessage, const void * data) {
     }
 }
 
-int receptionFromUI(char *typeMessage, char *data) {
+int receive_message_from_monitor(char *typeMessage, char *data) {
     char buffer[20];
     int tBuffer = lolReceive(buffer);
     sscanf(buffer, "%3s:%s %*s", typeMessage, data);

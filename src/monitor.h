@@ -2,7 +2,6 @@
 // Created by lucien on 05/04/17.
 //
 
-
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
@@ -14,19 +13,18 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string>
 #include <string.h>
-#include <iostream>
-#include "imagerie.h"
+#include "image.h"
+#include "definitions.h"
 
-#define IMG "IMG"
-#define BAT "BAT"
-#define POS "POS"
-#define MES "MSG" // Message directe pour Console Dumber
-#define ACK "ACK" // Message d'information concernant la derniére commande
-#define DMB "DMB"
+#define HEADER_STM_IMAGE "IMG"
+#define HEADER_STM_BAT "BAT"
+#define HEADER_STM_POS "POS"
+#define HEADER_STM_ACK "ACK" // Message d'information concernant la derniére commande
+#define HEADER_STM_MES "MSG" // Message d'information concernant la derniére commande
 
-#define CLOSE	'C'
+#define HEADER_MTS_MSG "MSG" // Message directe pour Console Dumber
+#define HEADER_MTS_DMB_ORDER "DMB"
 
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
@@ -49,26 +47,26 @@ typedef struct sockaddr SOCKADDR;
   * \param    file  chemin du fichier de l'interface (défaut ./interface.js)
  * \return   retourne 0 si le process a été lancé et -1 sinon.
  */
-int runNodejs(const char *  path = DEFAULT_NODEJS_PATH, char * file = DEFAULT_INTERFACE_FILE);
+int run_nodejs(const char *  path = DEFAULT_NODEJS_PATH, char * file = DEFAULT_INTERFACE_FILE);
 
  /**
  * \brief    Tue le process exécutant nodejs.
  * \return   retourne 0 en cas de succès et -1 sinon.
  */
-int killNodejs();
+int kill_nodejs();
 
  /**
  * \brief      Mise en place du serveur (port 8080 par défaut).
  * \param    port    numéro du port utilisé par le serveur (8080 par défaut).
  * \return   retourne 0 si le serveur est mis en place et -1 en cas de problème.
  */
-int serverOpen(int port=DEFAULT_PORT);  //public
+int open_server(int port=DEFAULT_PORT);  //public
 
  /**
  * \brief    Ferme le serveur.
      * \return   retourne 0 si le serveur est fermé et -1 en cas de problème.
  */
-int serverClose(void); // public
+int close_server(void); // public
 
  /**
  * \brief    Envoi d'un message vers l'interface graphique
@@ -82,8 +80,7 @@ int serverClose(void); // public
   * a posterio.
  * \return   retourne 0 si l'envoie a bien été réalisé et -1 en cas de problème.
  */
-int sendToUI(const char* typeMessage, const void * data=NULL);
-
+int send_message_to_monitor(const char* typeMessage, const void * data=NULL);
 
 /**
  * \brief    Réception d'un message. La fonction est bloquante et retourne par
@@ -97,7 +94,7 @@ int sendToUI(const char* typeMessage, const void * data=NULL);
  * \return   retourne 0 la taille du message reçu ou une valeur négative si la
  * connexion est perdue.
  */
-int receptionFromUI(char *typeMessage, char *data);
+int receive_message_from_monitor(char *typeMessage, char *data);
 
 
 #endif // TCPSERVER_H
