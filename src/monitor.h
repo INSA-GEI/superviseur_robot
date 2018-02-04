@@ -17,11 +17,12 @@
 #include "image.h"
 #include "definitions.h"
 
-#define HEADER_STM_IMAGE "IMG"
-#define HEADER_STM_BAT "BAT"
-#define HEADER_STM_POS "POS"
-#define HEADER_STM_ACK "ACK" // Message d'information concernant la derniére commande
-#define HEADER_STM_MES "MSG" // Message d'information concernant la derniére commande
+#define HEADER_STM_IMAGE "IMG" // Envoi d'une image
+#define HEADER_STM_BAT "BAT" // Envoi de l'état de la batterie
+#define HEADER_STM_POS "POS" // Envoi de la position
+#define HEADER_STM_NAC "NAC" // Acquittement d'un échec
+#define HEADER_STM_ACK "ACK" // Acquittement d'un succès
+#define HEADER_STM_MES "MSG" // Message textuel
 
 #define HEADER_MTS_MSG "MSG" // Message directe pour Console Dumber
 #define HEADER_MTS_DMB_ORDER "DMB" // Message d'ordre pour le robot
