@@ -36,6 +36,10 @@
 #define DEFAULT_PORT  8080
 #define DEFAULT_PARITY 0
 
+#define DETECT_ARENA    (1)
+#define CHECK_ARENA     (2)
+#define NO_ARENA        (3)
+
 #define DEFAULT_NODEJS_PATH "/usr/bin/nodejs"
 #define DEFAULT_INTERFACE_FILE "./interface.js"
 
