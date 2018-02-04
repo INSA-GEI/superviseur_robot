@@ -24,7 +24,9 @@
 #define HEADER_STM_MES "MSG" // Message d'information concernant la derniére commande
 
 #define HEADER_MTS_MSG "MSG" // Message directe pour Console Dumber
-#define HEADER_MTS_DMB_ORDER "DMB"
+#define HEADER_MTS_DMB_ORDER "DMB" // Message d'ordre pour le robot
+#define HEADER_MTS_COM_DMB "COM" // Message de gestion de la communication avec le robot
+#define HEADER_MTS_CAMERA "CAM" // Message de gestion de la camera
 
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1

@@ -14,8 +14,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-#define DMB_OPEN_COMMUNICATION  'o'
-#define DMB_CLOSE_COMMUNICATION 'C'
+#define OPEN_COM_DMB  'o'
+#define CLOSE_COM_DMB 'C'
+
 #define DMB_PING                'p'
 #define DMB_IDLE                'r'
 #define DMB_START_WITHOUT_WD    'u'
