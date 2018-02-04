@@ -23,6 +23,7 @@
 #define HEADER_STM_NAC "NAC" // Acquittement d'un échec
 #define HEADER_STM_ACK "ACK" // Acquittement d'un succès
 #define HEADER_STM_MES "MSG" // Message textuel
+#define HEADER_STM_LOST_DMB "LCD" // Perte de la communication avec le robot
 
 #define HEADER_MTS_MSG "MSG" // Message directe pour Console Dumber
 #define HEADER_MTS_DMB_ORDER "DMB" // Message d'ordre pour le robot
