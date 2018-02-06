@@ -3,11 +3,11 @@
 char mode_start;
 char movement;
 
-void write_in_queue(RT_QUEUE *, Message);
+void write_in_queue(RT_QUEUE *, MessageToRobot);
 
 void envoyer(void * arg) {
     int err;
-    Message msg;
+    MessageToRobot msg;
 
     /* INIT */
     RT_TASK_INFO info;
@@ -18,7 +18,7 @@ void envoyer(void * arg) {
 #ifdef _WITH_TRACE_
         printf("%s : waiting for a message in queue\n", info.name);
 #endif
-        if (rt_queue_read(&queueMsgGUI, &msg, sizeof (Message), TM_INFINITE) >= 0) {
+        if (rt_queue_read(&queueMsgGUI, &msg, sizeof (MessageToRobot), TM_INFINITE) >= 0) {
 #ifdef _WITH_TRACE_
             printf("%s : message {%s,%s} in queue\n", info.name, msg.header, msg.data);
 #endif
@@ -55,7 +55,7 @@ void connecter(void * arg) {
 #ifdef _WITH_TRACE_
             printf("%s : the robot is started\n", info.name);
 #endif
-            Message msg;
+            MessageToRobot msg;
             memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&queueMsgGUI, msg);
         }
@@ -63,7 +63,7 @@ void connecter(void * arg) {
 }
 
 void communiquer(void *arg) {
-    Message msg;
+    MessageToRobot msg;
 
     /* INIT */
     RT_TASK_INFO info;
@@ -83,14 +83,14 @@ void communiquer(void *arg) {
 #ifdef _WITH_TRACE_
                     printf("%s: Xbee communication failed\n", info.name);
 #endif
-                    Message msg;
+                    MessageToRobot msg;
                     memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
                     write_in_queue(&queueMsgGUI, msg);
                 } else {
 #ifdef _WITH_TRACE_
                     printf("%s: Xbee communication available\n", info.name);
 #endif
-                    Message msg;
+                    MessageToRobot msg;
                     memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
                     write_in_queue(&queueMsgGUI, msg);
                 }
@@ -147,9 +147,9 @@ void deplacer(void *arg) {
     }
 }
 
-void write_in_queue(RT_QUEUE *queue, Message msg) {
+void write_in_queue(RT_QUEUE *queue, MessageToRobot msg) {
     void *buff;
-    buff = rt_queue_alloc(&queueMsgGUI, sizeof (Message));
-    memcpy(buff, &msg, sizeof (Message));
-    rt_queue_send(&queueMsgGUI, buff, sizeof (Message), Q_NORMAL);
+    buff = rt_queue_alloc(&queueMsgGUI, sizeof (MessageToRobot));
+    memcpy(buff, &msg, sizeof (MessageToRobot));
+    rt_queue_send(&queueMsgGUI, buff, sizeof (MessageToRobot), Q_NORMAL);
 }

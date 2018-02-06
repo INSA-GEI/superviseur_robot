@@ -38,11 +38,17 @@
 #define ROBOT_CHECKSUM  -4
 #define ROBOT_OK    0
 
+#define CAM_OPEN                'A'
+#define CAM_CLOSE	            'I'
+#define CAM_ASK_AERNA           'y'
+#define CAM_ARENA_CONFIRM       'x'
+#define CAM_ARENA_INFIRM        'z'
+
 #define DMB_BAT_LOW 0
 #define DMB_BAT_MEDIUM 1
 #define DMB_BAT_HIGHT 2
 
-#define DMB_IS_BUSY 1
+#define DMB_BUSY 1
 #define DMB_DO_NOTHING 0
 
 #endif /* MSG_H */

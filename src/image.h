@@ -23,11 +23,14 @@
 #include <unistd.h>
 #include <math.h>
 
-#define WIDTH 640 //1280 1024 640
-#define HEIGHT 480 // 960 768 480
+#define WIDTH 480 //1280 1024 640 480
+#define HEIGHT 360 // 960 768 480 360
 
 using namespace std;
 using namespace cv;
+#ifndef __STUB__
+using namespace raspicam;
+#endif
 
 typedef Mat Image;
 #ifndef __STUB__

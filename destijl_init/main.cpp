@@ -124,7 +124,7 @@ void initStruct(void) {
     }
 
     /* Creation des files de messages */
-    if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE * sizeof (Message), MSG_QUEUE_SIZE, Q_FIFO)) {
+    if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE * sizeof (MessageToRobot), MSG_QUEUE_SIZE, Q_FIFO)) {
         printf("Error msg queue create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }

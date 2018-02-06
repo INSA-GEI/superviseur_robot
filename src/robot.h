@@ -27,7 +27,7 @@ typedef struct
    {
     char header[4];
     char data[20];
-   } Message;
+   } MessageToRobot;
 
  /**
  * \brief     Ouvre la communication avec le robot.

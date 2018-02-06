@@ -20,7 +20,7 @@
 #define HEADER_STM_IMAGE "IMG" // Envoi d'une image
 #define HEADER_STM_BAT "BAT" // Envoi de l'état de la batterie
 #define HEADER_STM_POS "POS" // Envoi de la position
-#define HEADER_STM_NAC "NAC" // Acquittement d'un échec
+#define HEADER_STM_NO_ACK "NAK" // Acquittement d'un échec
 #define HEADER_STM_ACK "ACK" // Acquittement d'un succès
 #define HEADER_STM_MES "MSG" // Message textuel
 #define HEADER_STM_LOST_DMB "LCD" // Perte de la communication avec le robot

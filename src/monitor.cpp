@@ -122,6 +122,11 @@ int send_message_to_monitor(const char* typeMessage, const void * data) {
         sprintf(buffer, "BAT%sTRAME", (const char*) data);
         serverSend(buffer, strlen(buffer));
         return 0;
+    } else if ((string) typeMessage == HEADER_STM_NO_ACK) {
+        char buffer[50];
+        sprintf(buffer, "NAK%sTRAME", (const char*) data);
+        serverSend(buffer, strlen(buffer));
+        return 0;
     } else {
         return -1;
     }
