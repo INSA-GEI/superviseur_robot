@@ -10,24 +10,19 @@ void f_server(void *arg) {
     RT_TASK_INFO info;
     rt_task_inquire(NULL, &info);
     printf("Init %s\n", info.name);
-    //rt_sem_p(&sem_barrier, TM_INFINITE);
-    while (1) {
-        rt_task_sleep(500000000);
-        printf("toto %s\n", info.name);
-    }
+    rt_sem_p(&sem_barrier, TM_INFINITE);
 
+    err = run_nodejs("/usr/bin/nodejs", "/home/pehladik/new_nodejs/server.js");
 
-    //err = run_nodejs("/usr/bin/nodejs", "/home/pehladik/new_nodejs/server.js");
-
-    /*if (err < 0) {
+    if (err < 0) {
         printf("Failed to start nodejs: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 #ifdef _WITH_TRACE_
     printf("%s: nodejs started\n", info.name);
 #endif
-    open_server();*/
-    //rt_sem_broadcast(&sem_serverOk);
+    open_server();
+    rt_sem_broadcast(&sem_serverOk);
 }
 
 void f_sendToMon(void * arg) {
@@ -73,6 +68,9 @@ void f_receiveFromMon(void *arg) {
     printf("Init %s\n", info.name);
     rt_sem_p(&sem_barrier, TM_INFINITE);
 
+#ifdef _WITH_TRACE_
+    printf("%s : waiting for sem_serverOk\n", info.name);
+#endif
     rt_sem_p(&sem_serverOk, TM_INFINITE);
     do {
         receive_message_from_monitor(msg.header, msg.data);

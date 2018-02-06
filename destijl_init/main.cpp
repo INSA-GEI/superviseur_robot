@@ -156,7 +156,7 @@ void initStruct(void) {
 void startTasks() {
 
     int err;
-    if (err = rt_task_start(&th_server, &f_receiveFromMon, NULL)) {
+    if (err = rt_task_start(&th_server, &f_server, NULL)) {
         printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -172,14 +172,14 @@ void startTasks() {
         printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    /*if (err = rt_task_start(&th_move, &f_move, NULL)) {
+    if (err = rt_task_start(&th_move, &f_move, NULL)) {
         printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
     if (err = rt_task_start(&th_startRobot, &f_startRobot, NULL)) {
         printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
-    }*/
+    }
 }
 
 void deleteTasks() {
