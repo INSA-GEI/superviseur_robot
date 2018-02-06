@@ -29,33 +29,42 @@
 #include "../../src/robot.h"
 #include "../../src/image.h"
 
-extern RT_TASK tServeur;
-extern RT_TASK tconnect;
-extern RT_TASK tmove;
-extern RT_TASK tenvoyer;
+extern RT_TASK th_server;
+extern RT_TASK th_sendToMon;
+extern RT_TASK th_receiveFromMon;
+extern RT_TASK th_openComRobot;
+extern RT_TASK th_startRobot;
+extern RT_TASK th_move;
 
-extern RT_MUTEX mutexEtat;
-extern RT_MUTEX mutexMove;
+extern RT_MUTEX mutex_robotStarted;
+extern RT_MUTEX mutex_move;
 
-extern RT_SEM semConnecterRobot;
+extern RT_SEM sem_barrier;
+extern RT_SEM sem_openComRobot;
+extern RT_SEM sem_serverOk;
+extern RT_SEM sem_startRobot;
 
-extern RT_QUEUE queueMsgGUI;
+extern RT_QUEUE q_messageToMon;
 
 extern int etatCommMoniteur;
-extern int etatCommRobot;
+extern int robotStarted;
+extern char move;
 
 extern int MSG_QUEUE_SIZE;
 
-extern int PRIORITY_TSERVEUR;
-extern int PRIORITY_TCONNECT;
+extern int PRIORITY_TSERVER;
+extern int PRIORITY_TOPENCOMROBOT;
 extern int PRIORITY_TMOVE;
-extern int PRIORITY_TENVOYER;
+extern int PRIORITY_TSENDTOMON;
+extern int PRIORITY_TRECEIVEFROMMON;
+extern int PRIORITY_TSTARTROBOT;
 
-void connecter(void * arg);
-void communiquer(void *arg);
-void deplacer(void *arg);
-void envoyer(void *arg);
-
+void f_server(void *arg);
+void f_sendToMon(void *arg);
+void f_receiveFromMon(void *arg);
+void f_openComRobot(void * arg);
+void f_move(void *arg);
+void f_startRobot(void *arg);
 
 #endif /* FUNCTIONS_H */
 

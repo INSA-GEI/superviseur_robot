@@ -18,28 +18,40 @@
 
 #include "./header/functions.h"
 
+// Déclaration des taches
+RT_TASK th_server;
+RT_TASK th_sendToMon;
+RT_TASK th_receiveFromMon;
+RT_TASK th_openComRobot;
+RT_TASK th_startRobot;
+RT_TASK th_move;
 
-RT_TASK tServeur;
-RT_TASK tconnect;
-RT_TASK tmove;
-RT_TASK tenvoyer;
+// Déclaration des priorités des taches
+int PRIORITY_TSERVER = 30;
+int PRIORITY_TOPENCOMROBOT = 20;
+int PRIORITY_TMOVE = 10;
+int PRIORITY_TSENDTOMON = 25;
+int PRIORITY_TRECEIVEFROMMON = 22;
+int PRIORITY_TSTARTROBOT = 20;
 
-RT_MUTEX mutexEtat;
-RT_MUTEX mutexMove;
+RT_MUTEX mutex_robotStarted;
+RT_MUTEX mutex_move;
 
-RT_SEM semConnecterRobot;
+// Déclaration des sémaphores
+RT_SEM sem_barrier;
+RT_SEM sem_openComRobot;
+RT_SEM sem_serverOk;
+RT_SEM sem_startRobot;
 
-RT_QUEUE queueMsgGUI;
-
-int etatCommMoniteur = 1;
-int etatCommRobot = 1;
+// Déclaration des files de message
+RT_QUEUE q_messageToMon;
 
 int MSG_QUEUE_SIZE = 10;
 
-int PRIORITY_TSERVEUR = 30;
-int PRIORITY_TCONNECT = 20;
-int PRIORITY_TMOVE = 10;
-int PRIORITY_TENVOYER = 25;
+// Déclaration des ressources partagées
+int etatCommMoniteur = 1;
+int robotStarted = 0;
+char move;
 
 /**
  * \fn void initStruct(void)
@@ -70,17 +82,8 @@ int main(int argc, char **argv) {
     printf("#################################\n");
 
     initStruct();
-    if ((err = run_nodejs("/usr/bin/nodejs", "/home/pehladik/Interface-TP-RT/interface.js")) < 0) {
-        printf("Error start nodejs: %s\n", strerror(-err));
-        exit(EXIT_FAILURE);
-    }
-#ifdef _WITH_TRACE_
-    printf("nodejs started\n");
-#endif
-
-    open_server();
-
     startTasks();
+    rt_sem_broadcast(&sem_barrier);
     pause();
     deleteTasks();
 
@@ -90,69 +93,97 @@ int main(int argc, char **argv) {
 void initStruct(void) {
     int err;
     /* Creation des mutex */
-    if (err = rt_mutex_create(&mutexEtat, NULL)) {
+    if (err = rt_mutex_create(&mutex_robotStarted, NULL)) {
         printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    if (err = rt_mutex_create(&mutexMove, NULL)) {
+    if (err = rt_mutex_create(&mutex_move, NULL)) {
         printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
     /* Creation du semaphore */
-    if (err = rt_sem_create(&semConnecterRobot, NULL, 0, S_FIFO)) {
+    if (err = rt_sem_create(&sem_barrier, NULL, 0, S_FIFO)) {
+        printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&sem_openComRobot, NULL, 0, S_FIFO)) {
+        printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&sem_serverOk, NULL, 0, S_FIFO)) {
+        printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_sem_create(&sem_startRobot, NULL, 0, S_FIFO)) {
         printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
     /* Creation des taches */
-    if (err = rt_task_create(&tServeur, "tServer", 0, PRIORITY_TSERVEUR, 0)) {
+    if (err = rt_task_create(&th_server, "th_server", 0, PRIORITY_TSERVER, 0)) {
         printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_create(&tconnect, "tConnect", 0, PRIORITY_TCONNECT, 0)) {
+    if (err = rt_task_create(&th_receiveFromMon, "th_receiveFromMon", 0, PRIORITY_TRECEIVEFROMMON, 0)) {
         printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_create(&tmove, "tMove", 0, PRIORITY_TMOVE, 0)) {
+    if (err = rt_task_create(&th_sendToMon, "th_sendToMon", 0, PRIORITY_TSENDTOMON, 0)) {
         printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_create(&tenvoyer, "tSend", 0, PRIORITY_TENVOYER, 0)) {
+    if (err = rt_task_create(&th_openComRobot, "th_openComRobot", 0, PRIORITY_TOPENCOMROBOT, 0)) {
+        printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&th_startRobot, "th_startRobot", 0, PRIORITY_TSTARTROBOT, 0)) {
+        printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&th_move, "th_move", 0, PRIORITY_TMOVE, 0)) {
         printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
     /* Creation des files de messages */
-    if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE * sizeof (MessageToRobot), MSG_QUEUE_SIZE, Q_FIFO)) {
+    if (err = rt_queue_create(&q_messageToMon, "toto", MSG_QUEUE_SIZE * sizeof (MessageToRobot), MSG_QUEUE_SIZE, Q_FIFO)) {
         printf("Error msg queue create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 }
 
 void startTasks() {
-    int err;
-    if (err = rt_task_start(&tconnect, &connecter, NULL)) {
-        printf("Error task start: %s\n", strerror(-err));
-        exit(EXIT_FAILURE);
-    }
-    if (err = rt_task_start(&tServeur, &communiquer, NULL)) {
-        printf("Error task start: %s\n", strerror(-err));
-        exit(EXIT_FAILURE);
-    }
-    if (err = rt_task_start(&tmove, &deplacer, NULL)) {
-        printf("Error task start: %s\n", strerror(-err));
-        exit(EXIT_FAILURE);
-    }
-    if (err = rt_task_start(&tenvoyer, &envoyer, NULL)) {
-        printf("Error task start: %s\n", strerror(-err));
-        exit(EXIT_FAILURE);
-    }
 
+    int err;
+    if (err = rt_task_start(&th_server, &f_receiveFromMon, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&th_receiveFromMon, &f_receiveFromMon, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&th_sendToMon, &f_sendToMon, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&th_openComRobot, &f_openComRobot, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    /*if (err = rt_task_start(&th_move, &f_move, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&th_startRobot, &f_startRobot, NULL)) {
+        printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }*/
 }
 
 void deleteTasks() {
-    rt_task_delete(&tServeur);
-    rt_task_delete(&tconnect);
-    rt_task_delete(&tmove);
+    rt_task_delete(&th_server);
+    rt_task_delete(&th_openComRobot);
+    rt_task_delete(&th_move);
 }
