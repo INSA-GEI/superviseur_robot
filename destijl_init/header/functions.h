@@ -28,6 +28,7 @@
 #include "../../src/monitor.h"    
 #include "../../src/robot.h"
 #include "../../src/image.h"
+#include "../../src/message.h"
 
 extern RT_TASK th_server;
 extern RT_TASK th_sendToMon;

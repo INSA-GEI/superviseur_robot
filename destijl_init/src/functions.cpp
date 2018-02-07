@@ -2,7 +2,7 @@
 
 char mode_start;
 
-void write_in_queue(RT_QUEUE *, MessageToRobot);
+void write_in_queue(RT_QUEUE *, MessageToMon);
 
 void f_server(void *arg) {
     int err;
@@ -28,7 +28,7 @@ void f_server(void *arg) {
 void f_sendToMon(void * arg) {
     int err;
     // TODO : refaire les message et la gestion de la file
-    MessageToRobot msg;
+    MessageToMon msg;
 
     /* INIT */
     RT_TASK_INFO info;
@@ -51,7 +51,13 @@ void f_sendToMon(void * arg) {
 #endif
 
             send_message_to_monitor(msg.header, msg.data);
+
+            printf("free data\n");
+            printf("p:%p\n",msg.data);
+            free_msgToMon_data(&msg);
+            printf("free msg\n");
             rt_queue_free(&q_messageToMon, &msg);
+            printf("yeepee\n");
         } else {
             printf("Error msg queue write: %s\n", strerror(-err));
         }
@@ -59,7 +65,6 @@ void f_sendToMon(void * arg) {
 }
 
 void f_receiveFromMon(void *arg) {
-    // TODO : refaire les messages
     MessageFromMon msg;
 
     /* INIT */
@@ -135,12 +140,14 @@ void f_openComRobot(void * arg) {
 #ifdef _WITH_TRACE_
             printf("%s : the communication is opened\n", info.name);
 #endif
-            MessageToRobot msg;
-            memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
+            MessageToMon msg;
+            set_msgToMon_header(&msg, HEADER_STM_ACK);
+            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         } else {
-            MessageToRobot msg;
-            memcpy(&msg.header, HEADER_STM_NO_ACK, sizeof (HEADER_STM_NO_ACK));
+            MessageToMon msg;
+            set_msgToMon_header(&msg, HEADER_STM_NO_ACK);
+            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         }
     }
@@ -172,12 +179,14 @@ void f_startRobot(void * arg) {
             rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
             robotStarted = 1;
             rt_mutex_release(&mutex_robotStarted);
-            MessageToRobot msg;
-            memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
+            MessageToMon msg;
+            set_msgToMon_header(&msg, HEADER_STM_ACK);
+            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         } else {
-            MessageToRobot msg;
-            memcpy(&msg.header, HEADER_STM_NO_ACK, sizeof (HEADER_STM_NO_ACK));
+            MessageToMon msg;
+            set_msgToMon_header(&msg, HEADER_STM_NO_ACK);
+            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         }
     }
@@ -217,9 +226,9 @@ void f_move(void *arg) {
     }
 }
 
-void write_in_queue(RT_QUEUE *queue, MessageToRobot msg) {
+void write_in_queue(RT_QUEUE *queue, MessageToMon msg) {
     void *buff;
-    buff = rt_queue_alloc(&q_messageToMon, sizeof (MessageToRobot));
-    memcpy(buff, &msg, sizeof (MessageToRobot));
-    rt_queue_send(&q_messageToMon, buff, sizeof (MessageToRobot), Q_NORMAL);
+    buff = rt_queue_alloc(&q_messageToMon, sizeof (MessageToMon));
+    memcpy(buff, &msg, sizeof (MessageToMon));
+    rt_queue_send(&q_messageToMon, buff, sizeof (MessageToMon), Q_NORMAL);
 }
