@@ -16,7 +16,7 @@ pid_t pidNodejs;
 
 string serverReceive(int size);
 int serverSend(const void *data, int dataLength);
-int lolReceive(char *data);
+int receive(char *data);
 
 int run_nodejs(const char * path, char * file) {
     int ret;
@@ -134,12 +134,12 @@ int send_message_to_monitor(const char* typeMessage, const void * data) {
 
 int receive_message_from_monitor(char *typeMessage, char *data) {
     char buffer[20];
-    int tBuffer = lolReceive(buffer);
+    int tBuffer = receive(buffer);
     sscanf(buffer, "%3s:%s", typeMessage, data);
     return tBuffer;
 }
 
-int lolReceive(char *data) {
+int receive(char *data) {
     int result;
     result = recv(csock, data, 20, 0);
     //cout <<"Data : " << data << endl;

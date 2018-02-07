@@ -99,7 +99,10 @@ void f_receiveFromMon(void *arg) {
                     || (msg.data[0] == DMB_GO_LEFT)
                     || (msg.data[0] == DMB_GO_RIGHT)
                     || (msg.data[0] == DMB_STOP_MOVE)) {
+
+                rt_mutex_acquire(&mutex_move, TM_INFINITE);
                 move = msg.data[0];
+                rt_mutex_release(&mutex_move);
 #ifdef _WITH_TRACE_
                 printf("%s: message update movement with %c\n", info.name, move);
 #endif
@@ -166,6 +169,9 @@ void f_startRobot(void * arg) {
 #ifdef _WITH_TRACE_
             printf("%s : the robot is started\n", info.name);
 #endif
+            rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
+            robotStarted = 1;
+            rt_mutex_release(&mutex_robotStarted);
             MessageToRobot msg;
             memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
@@ -196,14 +202,18 @@ void f_move(void *arg) {
         rt_task_wait_period(NULL);
 #ifdef _WITH_TRACE_
         printf("%s: Periodic activation\n", info.name);
-        printf("%s: send movement %c to the robot\n", info.name, move);
+        printf("%s: move equals %c\n", info.name, move);
 #endif
+        rt_mutex_acquire(&mutex_robotStarted, TM_INFINITE);
         if (robotStarted) {
+            rt_mutex_acquire(&mutex_move, TM_INFINITE);
             send_command_to_robot(move);
+            rt_mutex_release(&mutex_move);
 #ifdef _WITH_TRACE_
             printf("%s: the movement %c was sent\n", info.name, move);
 #endif            
         }
+        rt_mutex_release(&mutex_robotStarted);
     }
 }
 
