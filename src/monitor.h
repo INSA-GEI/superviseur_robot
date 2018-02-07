@@ -50,8 +50,8 @@ typedef struct sockaddr_in SOCKADDR_IN;
 typedef struct sockaddr SOCKADDR;
 
 typedef struct {
-    char header[3];
-    char data[1];
+    char header[4];
+    char data[2];
 } MessageFromMon;
 
 

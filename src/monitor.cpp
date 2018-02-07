@@ -135,7 +135,7 @@ int send_message_to_monitor(const char* typeMessage, const void * data) {
 int receive_message_from_monitor(char *typeMessage, char *data) {
     char buffer[20];
     int tBuffer = lolReceive(buffer);
-    sscanf(buffer, "%3s:%s %*s", typeMessage, data);
+    sscanf(buffer, "%3s:%s", typeMessage, data);
     return tBuffer;
 }
 

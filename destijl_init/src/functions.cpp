@@ -73,6 +73,9 @@ void f_receiveFromMon(void *arg) {
 #endif
     rt_sem_p(&sem_serverOk, TM_INFINITE);
     do {
+#ifdef _WITH_TRACE_
+        printf("%s : waiting for a message from monitor\n", info.name);
+#endif
         receive_message_from_monitor(msg.header, msg.data);
 #ifdef _WITH_TRACE_
         printf("%s: msg {header:%s,data=%s} received from UI\n", info.name, msg.header, msg.data);
