@@ -6,7 +6,7 @@ int getChar(char * c);
 int readSerial(char * msg);
 char checkSumGO(char * msg);
 int receiveMsg(void);
-int sendCmd(char cmd, char * arg);
+int sendCmd(char cmd, const char * arg);
 
 int open_communication_robot(const char * path)
 {
@@ -110,7 +110,7 @@ int send_command_to_robot(char cmd, const char * arg)
 /* PRIVATE                  */
 /****************************/
 
-int sendCmd(char cmd, char * arg)
+int sendCmd(char cmd, const char * arg)
 {
     char cmdWithArg[20]={};
     cmdWithArg[0]=cmd;
