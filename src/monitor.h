@@ -29,6 +29,7 @@
 #define HEADER_MTS_DMB_ORDER "DMB" // Message d'ordre pour le robot
 #define HEADER_MTS_COM_DMB "COM" // Message de gestion de la communication avec le robot
 #define HEADER_MTS_CAMERA "CAM" // Message de gestion de la camera
+#define HEADER_MTS_STOP "STO" // Message d'arrêt du system
 
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
