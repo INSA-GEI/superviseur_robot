@@ -27,7 +27,6 @@ void f_server(void *arg) {
 
 void f_sendToMon(void * arg) {
     int err;
-    // TODO : refaire les message et la gestion de la file
     MessageToMon msg;
 
     /* INIT */
@@ -51,13 +50,8 @@ void f_sendToMon(void * arg) {
 #endif
 
             send_message_to_monitor(msg.header, msg.data);
-
-            printf("free data\n");
-            printf("p:%p\n",msg.data);
             free_msgToMon_data(&msg);
-            printf("free msg\n");
             rt_queue_free(&q_messageToMon, &msg);
-            printf("yeepee\n");
         } else {
             printf("Error msg queue write: %s\n", strerror(-err));
         }
