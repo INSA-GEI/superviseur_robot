@@ -38,11 +38,13 @@
 #define ROBOT_CHECKSUM  -4
 #define ROBOT_OK    0
 
-#define CAM_OPEN                'A'
-#define CAM_CLOSE	            'I'
-#define CAM_ASK_AERNA           'y'
-#define CAM_ARENA_CONFIRM       'x'
-#define CAM_ARENA_INFIRM        'z'
+#define CAM_OPEN                    'A'
+#define CAM_CLOSE                   'I'
+#define CAM_ASK_ARENA               'y'
+#define CAM_ARENA_CONFIRM           'x'
+#define CAM_ARENA_INFIRM            'z'
+#define CAM_COMPUTE_POSITION        'p'
+#define CAM_STOP_COMPUTE_POSITION   's'
 
 #define DMB_BAT_LOW 0
 #define DMB_BAT_MEDIUM 1
