@@ -51,7 +51,7 @@ typedef struct sockaddr SOCKADDR;
 
 typedef struct {
     char header[4];
-    char data[2];
+    char data[100];
 } MessageFromMon;
 
 
