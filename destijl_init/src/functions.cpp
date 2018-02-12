@@ -136,12 +136,10 @@ void f_openComRobot(void * arg) {
 #endif
             MessageToMon msg;
             set_msgToMon_header(&msg, HEADER_STM_ACK);
-            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         } else {
             MessageToMon msg;
             set_msgToMon_header(&msg, HEADER_STM_NO_ACK);
-            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         }
     }
@@ -165,7 +163,6 @@ void f_startRobot(void * arg) {
         printf("%s : sem_startRobot arrived => Start robot\n", info.name);
 #endif
         err = send_command_to_robot(DMB_START_WITHOUT_WD);
-        err = open_communication_robot();
         if (err == 0) {
 #ifdef _WITH_TRACE_
             printf("%s : the robot is started\n", info.name);
@@ -175,12 +172,10 @@ void f_startRobot(void * arg) {
             rt_mutex_release(&mutex_robotStarted);
             MessageToMon msg;
             set_msgToMon_header(&msg, HEADER_STM_ACK);
-            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         } else {
             MessageToMon msg;
             set_msgToMon_header(&msg, HEADER_STM_NO_ACK);
-            //memcpy(&msg.header, HEADER_STM_ACK, sizeof (HEADER_STM_ACK));
             write_in_queue(&q_messageToMon, msg);
         }
     }
