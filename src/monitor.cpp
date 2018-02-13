@@ -21,7 +21,7 @@ int receive(char *data);
 int run_nodejs(const char * path, char * file) {
     int ret;
     //char *const parmList[] = {"/bin/ls", "-l", "/home", NULL};
-    char * const parmList[] = {"nodejs", file, NULL};
+    char * const parmList[] = {"node", file, NULL};
 
     if ((ret = fork()) == -1)
         perror("fork error");

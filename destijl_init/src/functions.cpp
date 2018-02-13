@@ -12,17 +12,18 @@ void f_server(void *arg) {
     printf("Init %s\n", info.name);
     rt_sem_p(&sem_barrier, TM_INFINITE);
 
-    err = run_nodejs("/usr/bin/nodejs", "/home/pehladik/new_nodejs/server.js");
+    err = run_nodejs("/usr/local/bin/node", "/home/pi/Interface_Robot/server.js");
 
     if (err < 0) {
         printf("Failed to start nodejs: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
-    }
+    } else {
 #ifdef _WITH_TRACE_
-    printf("%s: nodejs started\n", info.name);
+        printf("%s: nodejs started\n", info.name);
 #endif
-    open_server();
-    rt_sem_broadcast(&sem_serverOk);
+        open_server();
+        rt_sem_broadcast(&sem_serverOk);
+    }
 }
 
 void f_sendToMon(void * arg) {
@@ -60,6 +61,7 @@ void f_sendToMon(void * arg) {
 
 void f_receiveFromMon(void *arg) {
     MessageFromMon msg;
+    int err;
 
     /* INIT */
     RT_TASK_INFO info;
@@ -75,7 +77,7 @@ void f_receiveFromMon(void *arg) {
 #ifdef _WITH_TRACE_
         printf("%s : waiting for a message from monitor\n", info.name);
 #endif
-        receive_message_from_monitor(msg.header, msg.data);
+        err = receive_message_from_monitor(msg.header, msg.data);
 #ifdef _WITH_TRACE_
         printf("%s: msg {header:%s,data=%s} received from UI\n", info.name, msg.header, msg.data);
 #endif
@@ -108,7 +110,7 @@ void f_receiveFromMon(void *arg) {
 
             }
         }
-    } while ((strcmp(msg.header, HEADER_MTS_MSG) != 0) || (msg.data[0] != 'C'));
+    } while (err > 0);
 
 }
 
