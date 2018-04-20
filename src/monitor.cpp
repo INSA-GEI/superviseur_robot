@@ -127,6 +127,11 @@ int send_message_to_monitor(const char* typeMessage, const void * data) {
         sprintf(buffer, "NAK%sTRAME", (const char*) data);
         serverSend(buffer, strlen(buffer));
         return 0;
+    } else if ((string) typeMessage == HEADER_STM_LOST_DMB) {
+        char buffer[50];
+        sprintf(buffer, "LCD%sTRAME", (const char*) data);
+        serverSend(buffer, strlen(buffer));
+        return 0;
     } else {
         return -1;
     }
